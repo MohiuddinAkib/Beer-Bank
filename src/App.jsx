@@ -1,38 +1,41 @@
-import React, { Component, Fragment, Suspense } from "react";
-import "./App.css";
+import React, { Component, Fragment } from "react";
 
 // Router
-import { Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+// Alert module import
+import { Provider as AlertProvider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+// Context api
+import { Provider } from "./contexts";
 // Components
-import Home from "./views/Home";
 import MyNavbar from "./components/MyNavbar";
-import Deafult from "./views/Deafult";
-import Spinner from "./components/Spinner";
-const Favorites = React.lazy(() => import("./views/Favorites"));
+import MainContainer from "./components/MainContainer";
+
+// alert optional cofiguration
+const options = {
+  // you can also just use 'bottom center'
+  position: "top center",
+  timeout: 3000
+};
 
 class App extends Component {
   render() {
     return (
-      <Fragment>
-        <header>
-          <MyNavbar />
-        </header>
-        <main>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route
-              exact
-              path="/favorite"
-              component={() => (
-                <Suspense fallback={<Spinner />}>
-                  <Favorites />
-                </Suspense>
-              )}
-            />
-            <Route component={Deafult} />
-          </Switch>
-        </main>
-      </Fragment>
+      <Provider>
+        <AlertProvider template={AlertTemplate} {...options}>
+          <Router>
+            <Fragment>
+              <header>
+                <MyNavbar />
+              </header>
+
+              <main>
+                <MainContainer />
+              </main>
+            </Fragment>
+          </Router>
+        </AlertProvider>
+      </Provider>
     );
   }
 }
